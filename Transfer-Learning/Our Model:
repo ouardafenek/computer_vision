@@ -1,0 +1,68 @@
+Our Model: 
+
+	Train the model to solve a tagging problem by classifying the sentences represented with text embeddings to important and non-important. 
+
+	Rank the important sentences according to their semantic similarities (we propose LSA and PageRank) 
+
+	Fix an hyper-parameter on the min and max length of the summary based on length of the training data. 
+
+	Define a loss function that combines the following criteria: 
+		Whenever the summary has too many repetitions, the loss increases. 
+		Whenever the model is copying more than generating, the loss increases.
+
+	Define an Attention parameter on each word that decreases whenever this word is used. 
+
+
+
+
+																Evaluation Protocol:
+
+
+Datasets: 
+
+	We used the NYT Corpus which spans 20 years of newspapers between 1987 and 2007 (that’s 7,475 issues, to be exact). This collection includes the text of 1.8 million articles written at The Times. Of these, a further 650,000 articles include summaries written by indexers. 
+
+	We’ve also used the The CNN / Daily Mail dataset which contains online news articles (781 tokens on average) paired with multi-sentence summaries (3.75 sentences or 56 tokens on average). The processed version contains 287 226 training pairs, 13 368 validation pairs and 11 490 test pairs 
+
+
+Metrics:
+
+ 	ROUGE, or Recall-Oriented Understudy for Gisting Evaluation, is a set of metrics and a software package used for evaluating automatic summarization and machine translation software in NLP. 
+ 	The metrics compare an automatically produced summary or translation against a reference or a set of references (human-produced) summary or translation.
+
+ 	ROUGE-1: refers to the overlap of unigram (each word) between the system and reference summaries.
+	ROUGE-2: refers to the overlap of bigrams between the system and reference summaries.
+	ROUGE-L: Longest Common Subsequence based statistics. 
+
+
+Reference Model: Bottom-Up Abstractive Summarization
+
+
+Objectif: We want to overcome the problems of reporting details and making repetitions, that’s why we included the attention parameter that will improve our ROUGE-L. 
+
+
+Methodology:
+
+Pre-Processing: 
+	Keep only the supervised parts of the datasets.  (X,y) where X is the text, it’s label y is it’s summary. 
+	Get the most commun English words (particular treatment especially for the attention).  
+	Form textual embeddings from sentences using deep learning librairies. 
+
+
+Cross-Validation: 
+	As our model has many hyper-parameters to fix, we will use the CNN/DM corpus which has 13 368 validation pairs to find the most optimal parameters. 
+
+
+Our Network: 
+
+	Our network has basically two parts (two sub-models). The first one, classifies the sentences to important and non-important. The second, generates the summary. 
+
+	We would not train them separately, because, in that case, if one is bad it will directly infect the other, what we propose is to have a general loop on both models, than a sub-loop on the first one. This is inspired from the GAN architecture in which both models effect each other.
+
+
+Experiments: 
+	(Screen Shots)
+
+Comments: 
+
+Table 1 shows our main results on the CNN-DM corpus. Our model leads to a major improvement across all three scores, essentially the “R-L” score. In fact, since our model tried to overcome the problem of making repetitions and reporting details by including attention parameter, this leaded to improve this score that takes into account these problems.
